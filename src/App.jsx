@@ -9,12 +9,12 @@ import AppLayout from './layouts/AppLayout.jsx';
 import MembersPage from './pages/Admin/MembersPage.jsx';
 import MembershipPlansPage from './pages/Admin/MembershipPlansPage.jsx';
 import RenewalsPage from './pages/Admin/RenewalsPage.jsx';
-import TrainersPage from './pages/Trainer/TrainersPage.jsx';
+import TrainersPage from './pages/Admin/TrainersPage.jsx';
 import SchedulePage from './pages/Admin/SchedulePage.jsx';
-import MySchedulePage from './pages/Client/MySchedulePage.jsx';
+import MySchedulePage from './pages/Trainer/MySchedulePage.jsx';
 import MyClientsPage from './pages/Trainer/MyClientsPage.jsx';
 import MyPlanPage from './pages/Client/MyPlanPage.jsx';
-import MemberSchedulePage from './pages/Trainer/MemberSchedulePage.jsx';
+import MemberSchedulePage from './pages/Client/MemberSchedulePage.jsx';
 import InventoryPage from './pages/Admin/InventoryPage.jsx';
 
 const seedLocalStorage = () => {

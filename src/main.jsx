@@ -6,8 +6,9 @@ import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import App from './App.jsx'
 import { TransitionProvider } from './context/TransitionContext'
-import { AuthProvider } from './context/AuthContext.jsx' // 1. Import AuthProvider
-import 'react-big-calendar/lib/css/react-big-calendar.css' // <-- ADD THIS LINE
+import { AuthProvider } from './context/AuthContext.jsx'
+import 'react-big-calendar/lib/css/react-big-calendar.css'
+import { ThemeProvider } from './context/ThemeContext.jsx';
 
 
 const root = createRoot(document.getElementById('root'))
@@ -15,9 +16,11 @@ const root = createRoot(document.getElementById('root'))
 root.render(
   <StrictMode>
     <BrowserRouter>
-      <AuthProvider> {/* 2. Wrap App with AuthProvider */}
+      <AuthProvider>
         <TransitionProvider>
-          <App />
+          <ThemeProvider>
+            <App />
+          </ThemeProvider>
         </TransitionProvider>
       </AuthProvider>
     </BrowserRouter>

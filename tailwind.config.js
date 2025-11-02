@@ -1,7 +1,7 @@
 // tailwind.config.js
 
 // 1. Import the default theme for the fonts
-import defaultTheme from 'tailwindcss/defaultTheme'; 
+import defaultTheme from 'tailwindcss/defaultTheme';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -9,6 +9,7 @@ export default {
     "./index.html",
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       // 2. Add your custom font back in (use the exact name you declare in your @font-face)
@@ -19,9 +20,10 @@ export default {
 
       // 3. Custom background image (public file paths should start with /)
       backgroundImage: {
-        'login-background': "url('/gym-bg.jpg')",
+        'signup-background': "url('/gym1-bg.jpg')",
+        'login-background': "url('/gym1-bg.jpg')",
         'dashboard-background': "url('/dashboard-bg.jpg')",
-        'signup-background': "url('/signup-bg.jpg')",
+        "gym-logo": "url('/gym-logo.jpg')",
       },
 
       // 3. Your complete color palette
@@ -39,9 +41,9 @@ export default {
         },
         'custom-blue': '#1a365d',
         'custom-red': '#E63946',
-        'login-bg': '#6A89A7',
-        'login-bg-darker': '#88BDF2',
-        'login-bg-darkest': '#384959'
+        '-bg': '#6A89A7',
+        '-bg-darker': '#88BDF2',
+        '-bg-darkest': '#384959'
       }
     },
   },

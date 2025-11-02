@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { Link } from 'react-router-dom';
-import LoadingSpinner from '../../components/LoadingSpinner.jsx';
+import LoadingSpinner from '../../components/LoadingSpinner.jsx'; // We'll use this for the loading state
 
 function MyPlanPage() {
     const { user } = useAuth(); // The logged-in member
@@ -12,6 +12,7 @@ function MyPlanPage() {
     const [mySchedule, setMySchedule] = useState([]);
     const [trainers, setTrainers] = useState([]);
 
+    // (All of your data loading and memoized logic is correct)
     // Helper function to load all data
     const loadData = () => {
         const allMembers = JSON.parse(localStorage.getItem('gymMembers')) || [];
@@ -48,40 +49,32 @@ function MyPlanPage() {
         loadData();
     }, [user.id]);
 
-    // --- Memoized values for the dashboard cards ---
-
+    // Memoized values for the dashboard cards
     const pendingConfirmations = useMemo(() => {
         return mySchedule.filter(s => s.status === 'Pending').length;
     }, [mySchedule]);
 
-    // --- THIS SECTION CONTAINS THE DATE FIX ---
     const upcomingSessions = useMemo(() => {
         const trainerMap = new Map(trainers.map(t => [t.id, t.name]));
         const today = new Date();
-        today.setHours(0, 0, 0, 0); // Normalize to start of today (local time)
+        today.setHours(0, 0, 0, 0);
 
         return mySchedule
             .filter(s => {
                 if (s.status !== 'Confirmed') return false;
-
-                // --- THE FIX ---
-                // Parse the "YYYY-MM-DD" string as local time
                 const parts = s.date.split('-');
-                // parts[1] - 1 because months are 0-indexed
                 const eventDate = new Date(parts[0], parts[1] - 1, parts[2]);
-
-                return eventDate >= today; // Compare local to local
+                return eventDate >= today;
             })
             .sort((a, b) => new Date(a.date) - new Date(b.date))
             .map(s => ({
                 ...s,
                 trainerName: trainerMap.get(s.trainerId) || 'Unknown'
             }))
-            .slice(0, 3); // Get the next 3
+            .slice(0, 3);
     }, [mySchedule, trainers]);
-    // --- END OF FIX ---
 
-    // "Request Plan" button click handler (no change)
+    // "Request Plan" button click handler
     const handleRequestPlan = (chosenPlan) => {
         if (!window.confirm(`Are you sure you want to request the ${chosenPlan.name} plan? An admin will need to approve this request.`)) {
             return;
@@ -99,9 +92,9 @@ function MyPlanPage() {
     // --- Render Loading State ---
     if (!member) {
         return (
-            <div className="p-6 bg-gray-100 min-h-screen">
-                <h1 className="text-4xl font-bold text-gray-800">My Plan</h1>
-                <div className="rounded-lg bg-white p-6 shadow-md mt-6">
+            <div className="space-y-8 text-gray-900 dark:text-gray-100">
+                <h1 className="text-4xl font-bold text-gray-800 dark:text-gray-100">My Plan</h1>
+                <div className="rounded-lg bg-white p-6 shadow-md mt-6 dark:bg-gray-800">
                     <LoadingSpinner />
                 </div>
             </div>
@@ -109,58 +102,66 @@ function MyPlanPage() {
     }
 
     return (
-        <div className="p-6 bg-gray-100 min-h-screen space-y-6">
-            <h1 className="text-4xl font-bold text-gray-800">
+        <div className="space-y-8 text-gray-900 dark:text-gray-100">
+            <h1 className="text-4xl font-bold text-gray-800 dark:text-gray-100">
                 Welcome, {member.name}!
             </h1>
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                {/* --- Main Content (Plan Status) --- */}
                 <div className="lg:col-span-2 space-y-6">
                     {/* --- Member is ACTIVE --- */}
                     {member.planStatus === 'Active' && plan && (
-                        <div className="rounded-lg bg-white p-6 shadow-md">
-                            <h2 className="mb-4 text-xl font-semibold text-gray-900">My Membership Plan</h2>
+                        <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
+                            <h2 className="mb-4 text-xl font-semibold text-gray-900 dark:text-gray-100">My Membership Plan</h2>
                             <div className="space-y-4">
                                 <div>
-                                    <span className="block text-sm font-medium text-gray-500">Plan Name</span>
-                                    <span className="text-lg font-semibold text-gray-900">{plan.name}</span>
+                                    <span className="block text-sm font-medium text-gray-500 dark:text-gray-400">Plan Name</span>
+                                    <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">{plan.name}</span>
                                 </div>
                                 <div>
-                                    <span className="block text-sm font-medium text-gray-500">Price</span>
-                                    <span className="text-lg font-semibold text-gray-900">${plan.price}</span>
+                                    <span className="block text-sm font-medium text-gray-500 dark:text-gray-400">Price</span>
+                                    <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">${plan.price}</span>
                                 </div>
                                 <div>
-                                    <span className="block text-sm font-medium text-gray-500">Joined On</span>
-                                    <span className="text-lg font-semibold text-gray-900">{new Date(member.joinDate).toLocaleDateString()}</span>
+                                    <span className="block text-sm font-medium text-gray-500 dark:text-gray-400">Joined On</span>
+                                    <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">{new Date(member.joinDate).toLocaleDateString()}</span>
                                 </div>
                                 <div>
-                                    <span className="block text-sm font-medium text-gray-500">Expires On</span>
-                                    <span className="text-lg font-semibold text-red-600">{expiryDate ? expiryDate.toLocaleDateString() : 'N/A'}</span>
+                                    <span className="block text-sm font-medium text-gray-500 dark:text-gray-400">Expires On</span>
+                                    <span className="text-lg font-semibold text-red-600 dark:text-red-500">
+                                        {expiryDate ? expiryDate.toLocaleDateString() : 'N/A'}
+                                    </span>
                                 </div>
                             </div>
                         </div>
                     )}
+
                     {/* --- Member is PENDING APPROVAL --- */}
                     {member.planStatus === 'PendingApproval' && (
-                        <div className="rounded-lg bg-white p-6 shadow-md">
-                            <h2 className="mb-4 text-xl font-semibold text-gray-900">Request Pending</h2>
-                            <p className="text-lg text-gray-700">
+                        <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
+                            <h2 className="mb-4 text-xl font-semibold text-gray-900 dark:text-gray-100">Request Pending</h2>
+                            <p className="text-lg text-gray-700 dark:text-gray-200">
                                 Your request for the **{member.plan}** plan is pending admin approval.
                             </p>
-                            <p className="mt-2 text-gray-500">This will be updated once your payment is confirmed.</p>
+                            <p className="mt-2 text-gray-500 dark:text-gray-400">This will be updated once your payment is confirmed.</p>
                         </div>
                     )}
+
                     {/* --- Member is INACTIVE (New Signup) --- */}
                     {member.planStatus === 'Inactive' && (
-                        <div className="rounded-lg bg-white p-6 shadow-md">
-                            <h2 className="mb-4 text-xl font-semibold text-gray-900">Choose Your Plan</h2>
-                            <p className="mb-4 text-gray-600">You do not have an active plan. Please choose a plan below to request activation.</p>
+                        <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
+                            <h2 className="mb-4 text-xl font-semibold text-gray-900 dark:text-gray-100">Choose Your Plan</h2>
+                            <p className="mb-4 text-gray-600 dark:text-gray-300">You do not have an active plan. Please choose a plan below to request activation.</p>
+
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {allPlans.map(p => (
-                                    <div key={p.id} className="flex flex-col justify-between rounded-lg border border-gray-200 p-4 shadow-sm">
+                                    <div key={p.id} className="flex flex-col justify-between rounded-lg border border-gray-200 p-4 shadow-sm dark:border-gray-700">
                                         <div>
-                                            <h3 className="text-lg font-semibold text-blue-600">{p.name}</h3>
-                                            <p className="text-2xl font-bold text-gray-900">${p.price}</p>
-                                            <p className="text-sm text-gray-500">{p.duration} days</p>
+                                            <h3 className="text-lg font-semibold text-blue-600 dark:text-blue-400">{p.name}</h3>
+                                            <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">${p.price}</p>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400">{p.duration} days</p>
                                         </div>
                                         <button
                                             onClick={() => handleRequestPlan(p)}
@@ -174,42 +175,44 @@ function MyPlanPage() {
                         </div>
                     )}
                 </div>
-                {/* --- Sidebar Cards --- */}
+
+                {/* --- Sidebar (New Dashboard Cards) --- */}
                 <div className="space-y-6">
                     {/* --- Pending Actions Card --- */}
                     {pendingConfirmations > 0 && (
-                        <div className="rounded-lg bg-yellow-100 p-6 shadow-md">
-                            <h2 className="mb-2 text-xl font-semibold text-yellow-800">Action Required</h2>
-                            <p className="text-yellow-700">
+                        <div className="rounded-lg bg-yellow-100 p-6 shadow-md dark:bg-yellow-800">
+                            <h2 className="mb-2 text-xl font-semibold text-yellow-800 dark:text-yellow-100">Action Required</h2>
+                            <p className="text-yellow-700 dark:text-yellow-200">
                                 You have **{pendingConfirmations}** session(s) waiting for your confirmation.
                             </p>
                             <Link
                                 to="/my-schedule"
-                                className="mt-4 inline-block rounded-md bg-yellow-600 px-4 py-2 text-sm font-semibold text-white hover:bg-yellow-700"
+                                className="mt-4 inline-block rounded-md bg-yellow-600 px-4 py-2 text-sm font-semibold text-white hover:bg-yellow-700 dark:bg-yellow-700 dark:hover:bg-yellow-600"
                             >
                                 View Schedule
                             </Link>
                         </div>
                     )}
+
                     {/* --- Upcoming Sessions Card --- */}
-                    <div className="rounded-lg bg-white p-6 shadow-md">
-                        <h2 className="mb-4 text-xl font-semibold text-gray-900">Upcoming Sessions</h2>
+                    <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
+                        <h2 className="mb-4 text-xl font-semibold text-gray-900 dark:text-gray-100">Upcoming Sessions</h2>
                         {upcomingSessions.length > 0 ? (
                             <ul className="space-y-3">
                                 {upcomingSessions.map(s => (
-                                    <li key={s.id} className="rounded-md border border-gray-200 p-3">
-                                        <p className="font-semibold text-gray-800">w/ {s.trainerName}</p>
-                                        <p className="text-sm text-gray-600">{new Date(s.date).toLocaleDateString()}</p>
-                                        <p className="text-sm text-gray-600">{s.startTime} - {s.endTime}</p>
+                                    <li key={s.id} className="rounded-md border border-gray-200 p-3 dark:border-gray-700">
+                                        <p className="font-semibold text-gray-800 dark:text-gray-100">w/ {s.trainerName}</p>
+                                        <p className="text-sm text-gray-600 dark:text-gray-400">{new Date(s.date).toLocaleDateString()}</p>
+                                        <p className="text-sm text-gray-600 dark:text-gray-400">{s.startTime} - {s.endTime}</p>
                                     </li>
                                 ))}
                             </ul>
                         ) : (
-                            <p className="text-gray-500">You have no upcoming confirmed sessions.</p>
+                            <p className="text-gray-500 dark:text-gray-400">You have no upcoming confirmed sessions.</p>
                         )}
                         <Link
                             to="/my-schedule"
-                            className="mt-4 inline-block text-sm font-semibold text-blue-600 hover:underline"
+                            className="mt-4 inline-block text-sm font-semibold text-blue-600 hover:underline dark:text-blue-400"
                         >
                             View Full Schedule &rarr;
                         </Link>

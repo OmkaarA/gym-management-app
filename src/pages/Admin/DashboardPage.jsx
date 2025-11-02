@@ -1,14 +1,13 @@
 // Dashboard page showing key stats and charts
 
 import React, { useState, useEffect } from 'react';
-// --- 1. Import Link ---
 import { Link } from 'react-router-dom';
 import StatCard from '../../components/StatCard.jsx';
 import { useAuth } from '../../context/AuthContext.jsx';
 import MonthlyRevenueChart from '../../components/MonthlyRevenueChart.jsx';
 import TimeframeSwitcher from '../../components/TimeframeSwitcher.jsx';
 
-// Icons (no change)
+// Icons
 const MemberIcon = () => <span>👥</span>;
 const PlanIcon = () => <span>📄</span>;
 const RevenueIcon = () => <span>💰</span>;
@@ -109,27 +108,36 @@ function DashboardPage() {
     .slice(0, 5);
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen text-gray-900 space-y-8">
-      {/* --- Header (no change) --- */}
-      <h1 className="text-4xl font-bold text-gray-800">
+    <div className="text-gray-900 space-y-8 dark:text-gray-100">
+      {/* --- Header --- */}
+      <h1 className="text-4xl font-bold text-gray-800 dark:text-gray-100">
         Welcome back, <span className="capitalize">{user?.username || 'User'}</span>!
       </h1>
 
-      {/* --- STAT CARDS (no change) --- */}
+      {/* --- STAT CARDS --- */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <StatCard title="Total Members" value={members.length} icon={<span>👥</span>} />
-        <StatCard title="Active Plans" value={activePlans} icon={<span>📄</span>} />
+
+        {/* 1. "Total Members" is a clickable link */}
+        <Link to="/members" className="transition-transform duration-200 ease-in-out hover:scale-[1.03]">
+          <StatCard title="Total Members" value={members.length} icon={<span>👥</span>} />
+        </Link>
+        {/* 2. "Active Plans" is a clickable link */}
+        <Link to="/plans" className="transition-transform duration-200 ease-in-out hover:scale-[1.03]">
+          <StatCard title="Active Plans" value={activePlans} icon={<span>📄</span>} />
+        </Link>
+
+        {/* 3. "Revenue" is not clickable (no page) */}
         <StatCard title="Revenue (This Month)" value={`$${monthlyRevenue}`} icon={<span>💰</span>} />
       </div>
 
       {/* --- Grid for Chart and Lists --- */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
 
-        {/* 1. Revenue Chart (no change) */}
-        <div className="rounded-lg bg-white p-6 shadow-md lg:col-span-2">
+        {/* 1. Revenue Chart */}
+        <div className="rounded-lg bg-white p-6 shadow-md lg:col-span-2 dark:bg-gray-800">
           {/* Chart Header */}
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-gray-900">Revenue</h2>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Revenue</h2>
             <div className="flex items-center gap-2">
               <TimeframeSwitcher
                 timeframes={['6M', '1Y']}
@@ -139,7 +147,7 @@ function DashboardPage() {
               <button
                 onClick={() => setIsChartModalOpen(true)}
                 title="Expand Chart"
-                className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+                className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-gray-200"
               ><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-5 w-5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m4.5 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
                 </svg>
@@ -156,24 +164,20 @@ function DashboardPage() {
           </div>
         </div>
 
-        {/* --- 2. New Members List (UPDATED) --- */}
-        <div className="rounded-lg bg-white p-6 shadow-md">
-          {/* Wrap h2 in a Link and add hover styles */}
-          <Link to="/members">
-            <h2 className="mb-4 text-xl font-semibold text-gray-900 transition-colors hover:text-blue-600 hover:underline">
-              New Members
-            </h2>
-          </Link>
+        {/* --- 2. New Members List --- */}
+        <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
+          <h2 className="mb-4 text-xl font-semibold text-gray-900 transition-colors dark:text-gray-100">
+            New Members
+          </h2>
           <ul className='space-y-3'>
             {recentMembers.length > 0 ? (
               recentMembers.map((member) => (
-                <li key={member.id} className="flex justify-between text-gray-700">
-                  <span> {member.name}</span>
-                  <span className='text-gray-500'>{new Date(member.joinDate).toLocaleDateString()}</span>
+                <li key={member.id} className="flex justify-between text-gray-700 dark:text-gray-200">                  <span> {member.name}</span>
+                  <span className='text-gray-500 dark:text-gray-400'>{new Date(member.joinDate).toLocaleDateString()}</span>
                 </li>
               ))
             ) : (
-              <p className='text-gray-500'>
+              <p className='text-gray-500 dark:text-gray-400'>
                 No new members have joined yet.
               </p>
             )}
@@ -181,10 +185,9 @@ function DashboardPage() {
         </div>
 
         {/* --- 3. Pending Renewals Card (UPDATED) --- */}
-        <div className="rounded-lg bg-white p-6 shadow-md">
-          {/* Wrap h2 in a Link and add hover styles */}
+        <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">          {/* Wrap h2 in a Link and add hover styles */}
           <Link to="/renewals">
-            <h2 className="mb-4 text-xl font-semibold text-gray-900 transition-colors hover:text-blue-600 hover:underline">
+            <h2 className="mb-4 text-xl font-semibold text-gray-900 transition-colors hover:text-blue-600 hover:underline dark:text-gray-100 dark:hover:text-blue-500">
               Pending Renewals
             </h2>
           </Link>
@@ -192,37 +195,34 @@ function DashboardPage() {
           {pendingRenewals.length > 0 ? (
             <ul className='space-y-3'>
               {pendingRenewals.map((member) => (
-                <li key={member.id} className="flex justify-between items-center text-gray-700">
-                  <div>
-                    <span>{member.name}</span>
-                    <span className='block text-sm text-gray-500'>{member.plan}</span>
-                  </div>
-                  <span className='text-sm font-medium text-red-600'>
+                <li key={member.id} className="flex justify-between items-center text-gray-700 dark:text-gray-200">                  <div>
+                  <span>{member.name}</span>
+                  <span className='block text-sm text-gray-500 dark:text-gray-400'>{member.plan}</span>                </div>
+                  <span className='text-sm font-medium text-red-600 dark:text-red-500'>
                     Expired: {member.expiryDate.toLocaleDateString()}
                   </span>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className='text-gray-500'>No renewals are due.</p>
-          )}
+            <p className='text-gray-500 dark:text-gray-400'>No renewals are due.</p>)}
         </div>
 
       </div>
 
-      {/* --- MODAL (no change) --- */}
+      {/* --- MODAL --- */}
       {isChartModalOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
           onClick={() => setIsChartModalOpen(false)}
         >
           <div
-            className="relative w-11/12 max-w-6xl rounded-lg bg-white p-6 shadow-xl"
+            className="relative w-11/12 max-w-6xl rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={() => setIsChartModalOpen(false)}
-              className="absolute -top-3 -right-3 z-10 rounded-full bg-white p-1 text-gray-500 shadow-md hover:text-gray-800"
+              className="absolute -top-3 -right-3 z-10 rounded-full bg-white p-1 text-gray-500 shadow-md hover:text-gray-800 dark:bg-gray-700 dark:text-gray-300 dark:hover:text-white"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-6 w-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -231,7 +231,7 @@ function DashboardPage() {
             {revenueData.labels.length > 0 ? (
               <MonthlyRevenueChart chartData={revenueData} timeframe={timeframe} />
             ) : (
-              <p>Loading chart data...</p>
+              <p>Loading chart data...</p> // Will inherit dark:text-gray-100
             )}
           </div>
         </div>

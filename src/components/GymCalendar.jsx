@@ -28,7 +28,7 @@ const localizer = dateFnsLocalizer({
  */
 function GymCalendar({ events, onSelectEvent }) {
     return (
-        <div className="h-[70vh] rounded-lg bg-white p-4 shadow-md">
+        <div className="h-[70vh] rounded-lg bg-white p-4 shadow-md dark:bg-gray-800">
             <Calendar
                 localizer={localizer}
                 events={events}

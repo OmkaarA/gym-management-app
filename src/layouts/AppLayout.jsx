@@ -10,11 +10,11 @@ function AppLayout() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex h-screen">
       <Sidebar isOpen={isSidebarOpen} toggle={toggleSidebar} />
-
       <main
-        className={`flex-1 p-8 transition-all duration-300 ${isSidebarOpen ? 'ml-64' : 'ml-0'}`}
+        className={`flex-1 overflow-y-auto bg-gray-100 p-8 transition-all duration-300 dark:bg-gray-900 ${isSidebarOpen ? 'ml-64' : 'ml-0'
+          }`}
       >
         {/* === ADD THIS "SHOW" BUTTON === */}
         {!isSidebarOpen && (

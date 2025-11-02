@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import PageTransition from '../components/PageTransition';
 import { useTransition } from '../context/TransitionContext';
 import { useAuth } from '../context/AuthContext';
-import gymLogo from '../assets/gym-logo.jpg';
+// import gymLogo from '../assets/gym-logo.jpg';
 import Lottie from 'lottie-react';
 import loginAnimationData from "../assets/gymanim.json";
 function LoginPage() {
@@ -62,13 +62,13 @@ function LoginPage() {
 
         <div className="w-full md:w-1/3 max-w-md rounded-lg bg-gray-900/60 backdrop-blur-md border border-gray-700 p-8">
 
-          <div className="w-40 h-40 mx-auto mb-4">
+          {/* <div className="w-40 h-40 mx-auto mb-4">
             <img
               src={gymLogo}
               alt="GYM Logo"
               className="w-full h-full rounded-full object-cover shadow-lg"
             />
-          </div>
+          </div> */}
 
           <h1 className="mb-6 text-center text-3xl font-tourney font-black text-gray-100">
             Login

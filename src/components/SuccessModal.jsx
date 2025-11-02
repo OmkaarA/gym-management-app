@@ -1,6 +1,6 @@
 import React from 'react';
 import Lottie from 'lottie-react';
-import successAnimationData from '../assets/success.json'; // Check this path
+import successAnimationData from '../assets/Success.json'; // Check this path
 
 /**
  * A modal that shows a success animation and a message.
